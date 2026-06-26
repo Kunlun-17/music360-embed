@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Forge Plan — Music360</title>
+<style>
+  /* RESET & KAJABI CONTAINER OVERRIDES */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  html, body, 
+  [id^="section-"], 
+  .custom-code-block, 
+  .kjb-custom-code,
+  .section, 
+  .container {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    clear: both !important;
+  }
+  
+  body {
+    background: #FAF8F5;
+    color: #2C2C2C;
+    font-family: 'Georgia', serif;
+    padding: 24px 20px 80px 20px;
+    min-height: 100vh !important;
+  }
+
+  /* NATIVE TABLE SYSTEM FOR PERFECT ALIGNMENT */
+  .forge-table-wrapper {
+    border: 0.5px solid #D9D0C7;
+    border-radius: 6px;
+    overflow: hidden;
+    background: white;
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  table.forge-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed; /* Forces columns to strictly respect assigned widths */
+  }
+
+  table.forge-table th {
+    background: #F5F0EB;
+    font-size: 9px;
+    font-weight: 700;
+    color: #8B6F5E;
+    font-family: Georgia, serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 0.5px solid #D9D0C7;
+    border-right: 0.5px solid #D9D0C7;
+  }
+  table.forge-table th:last-child { border-right: none; }
+
+  table.forge-table td {
+    padding: 8px 10px;
+    border-bottom: 0.5px solid #EDE8E2;
+    border-right: 0.5px solid #D9D0C7;
+    vertical-align: top; /* Ensures elements line up from the top edge */
+  }
+  table.forge-table tr:last-child td { border-bottom: none; }
+  table.forge-table td:last-child { border-right: none; }
+
+  /* HARDCODED STREAMLINED COLUMN WIDTHS */
+  .col-step { width: 150px; }
+  .col-sub  { width: auto; }
+  .col-when { width: 95px; }
+  .col-done { width: 42px; }
+
+  /* ALIGNMENT INNER COMPONENTS */
+  .step-cell-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .step-num {
+    color: #C4956C;
+    font-weight: 700;
+    font-size: 12px;
+    font-family: 'Georgia', serif;
+    line-height: 20px;
+    display: inline-block;
+    min-width: 16px;
+    padding-top: 1px;
+  }
+
+  .sub-steps-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+  }
+
+  /* INPUT & ELEMENT BASES */
+  .step-input {
+    background: transparent;
+    border: none;
+    border-bottom: 0.5px dashed #D9D0C7;
+    color: #2C2C2C;
+    font-family: 'Georgia', serif;
+    font-size: 11px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 2px;
+    width: 100%;
+    outline: none;
+  }
+  .step-input:focus { border-bottom: 1px solid #C4956C; }
+  .step-input::placeholder { color: #C4B8A8; opacity: 0.8; }
+
+  .fill-input {
+    background: transparent;
+    border: none;
+    border-bottom: 0.5px solid #C4956C;
+    color: #2C2C2C;
+    font-family: 'Georgia', serif;
+    font-size: 11px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 2px;
+    width: 100%;
+    outline: none;
+  }
+  .fill-input:focus { border-bottom: 1.5px solid #8B6F5E; }
+  .fill-input::placeholder { color: #B0A898; }
+
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #C4956C;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px auto 0 auto; /* Horizontally centered in column, aligned with top row text */
+    background: white;
+    transition: background 0.15s;
+  }
+  .check-box.checked { background: #C4956C; }
+  .check-box.checked::after { content: '✓'; color: white; font-size: 10px; font-weight: 600; }
+
+  .section-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #8B6F5E;
+    margin-bottom: 6px;
+    font-family: 'Georgia', serif;
+    text-transform: uppercase;
+  }
+  
+  .card { border: 0.5px solid #D9D0C7; border-radius: 6px; padding: 10px 12px; background: #F5F0EB; }
+  .milestone-dot { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #FAF8F5; }
+  
+  .add-btn {
+    background: none;
+    border: 0.5px dashed #C4956C;
+    border-radius: 4px;
+    color: #C4956C;
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    font-size: 11px;
+    padding: 6px 12px;
+    width: 100%;
+    text-align: left;
+    margin-top: 4px;
+    transition: background 0.15s;
+  }
+  .add-btn:hover { background: #FDF8F4; }
+  
+  .remove-btn {
+    background: none;
+    border: none;
+    color: #C4B8A8;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 20px;
+    height: 20px;
+    padding: 0 2px;
+    margin-left: auto;
+  }
+  .remove-btn:hover { color: #8B6F5E; }
+
+  .checkin-textarea {
+    background: #FDFCFA;
+    border: 0.5px solid #D9D0C7;
+    border-radius: 4px;
+    color: #2C2C2C;
+    font-family: 'Georgia', serif;
+    font-size: 11px;
+    padding: 8px 10px;
+    width: 100%;
+    outline: none;
+    resize: vertical;
+    min-height: 56px;
+    line-height: 1.6;
+  }
+  .checkin-textarea:focus { border-color: #C4956C; }
+  .checkin-textarea::placeholder { color: #B0A898; }
+  .week-label { font-size: 9px; font-weight: 700; color: #C4956C; font-family: 'Georgia', serif; margin-bottom: 4px; }
+</style>
+</head>
+<body>
+
+<div style="border: 0.5px solid #D9D0C7; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; background: white; text-align: center;">
+  <div style="font-size: 13px; font-weight: 700; color: #8B6F5E; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 3px;">The Forge Plan</div>
+  <div style="font-size: 10px; color: #B0A898; letter-spacing: 0.5px;">Music360 Summer Practice 2026</div>
+</div>
+
+<div style="margin-bottom: 16px;">
+  <div class="section-label">My one thing this summer</div>
+  <div style="border: 0.5px solid #D9D0C7; border-radius: 4px; padding: 10px 12px; background: white;">
+    <input class="fill-input" placeholder="Write it here — one thing, no editing..." style="font-size: 12px;"/>
+  </div>
+</div>
+
+<div style="margin-bottom: 16px;">
+  <div class="section-label">Steps &amp; sub-steps</div>
+  <div class="forge-table-wrapper">
+    <table class="forge-table">
+      <thead>
+        <tr>
+          <th class="col-step">Step</th>
+          <th class="col-sub">Sub-steps</th>
+          <th class="col-when">By when</th>
+          <th class="col-done" style="text-align: center;">✓</th>
+        </tr>
+      </thead>
+      <tbody id="rows-container">
+        </tbody>
+    </table>
+  </div>
+  <button class="add-btn" onclick="addRow()">+ Add another step</button>
+</div>
+
+<div style="margin-bottom: 16px;">
+  <div class="section-label">Summer timeline</div>
+  <div style="position: relative; height: 64px; padding: 0 36px;">
+    <div style="position:absolute;top:14px;left:36px;right:36px;height:6px;background:#EDE8E2;border-radius:3px;border:0.5px solid #D9D0C7;"></div>
+    <div style="position:absolute;top:14px;left:36px;width:28%;height:6px;background:#C4956C;border-radius:3px;opacity:0.4;"></div>
+
+    <div style="position:absolute;top:8px;left:0;display:flex;flex-direction:column;align-items:center;gap:2px;width:66px;">
+      <div class="milestone-dot" style="background:#6B8E7F;"></div>
+      <div style="font-size:9px;font-weight:700;color:#6B8E7F;font-family:Georgia,serif;white-space:nowrap;">Begin</div>
+      <input class="fill-input" style="width:58px;text-align:center;font-size:10px;" placeholder="Jun 21"/>
+    </div>
+
+    <div style="position:absolute;top:8px;left:38%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:72px;">
+      <div class="milestone-dot" style="background:#C4956C;"></div>
+      <div style="font-size:9px;font-weight:700;color:#C4956C;font-family:Georgia,serif;white-space:nowrap;">Mid-season</div>
+      <input class="fill-input" style="width:60px;text-align:center;font-size:10px;" placeholder="Date..."/>
+    </div>
+
+    <div style="position:absolute;top:8px;left:72%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;width:80px;">
+      <div class="milestone-dot" style="background:#8B6F5E;"></div>
+      <div style="font-size:9px;font-weight:700;color:#8B6F5E;font-family:Georgia,serif;white-space:nowrap;">Integration</div>
+      <input class="fill-input" style="width:64px;text-align:center;font-size:10px;" placeholder="Sep 1"/>
+    </div>
+
+    <div style="position:absolute;top:8px;right:0;display:flex;flex-direction:column;align-items:center;gap:2px;width:72px;">
+      <div class="milestone-dot" style="background:#6B8E7F; opacity:0.5;"></div>
+      <div style="font-size:9px;font-weight:700;color:#6B8E7F;font-family:Georgia,serif;white-space:nowrap;opacity:0.6;">Equinox</div>
+      <input class="fill-input" style="width:58px;text-align:center;font-size:10px;" placeholder="Sep 22"/>
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;">
+  <div class="card">
+    <div class="section-label">Minimum viable version</div>
+    <div style="font-size:10px;color:#8B6F5E;font-style:italic;margin-bottom:6px;">The smallest real version that would still count</div>
+    <input class="fill-input" placeholder="Write it here..."/>
+  </div>
+  <div class="card">
+    <div class="section-label">My real constraints</div>
+    <div style="font-size:10px;color:#8B6F5E;font-style:italic;margin-bottom:6px;">Time · Money · Energy · Other</div>
+    <input class="fill-input" placeholder="Name them honestly..."/>
+  </div>
+  <div class="card">
+    <div class="section-label">My forge partner</div>
+    <div style="font-size:10px;color:#8B6F5E;font-style:italic;margin-bottom:6px;">your witness for the season</div>
+    <input class="fill-input" placeholder="Name..." style="margin-bottom:5px;"/>
+    <input class="fill-input" placeholder="Check-in day..."/>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom: 0;">
+  <div class="section-label" style="margin-bottom:8px;">Weekly check-in — every Sunday</div>
+  <div style="font-size:10px;color:#8B6F5E;font-style:italic;margin-bottom:12px;">What did I forge? &nbsp;·&nbsp; What got in the way? &nbsp;·&nbsp; What does next week need from me?</div>
+  <div id="checkins-container"></div>
+  <button class="add-btn" onclick="addCheckin()" style="margin-top:8px;">+ Add another week</button>
+</div>
+
+<script>
+  let rowCount = 4;
+  let checkinCount = 1;
+
+  function getRowBg(i) {
+    return i % 2 === 0 ? '#FDFCFA' : '#F9F6F2';
+  }
+
+  function buildRow(num) {
+    const tr = document.createElement('tr');
+    tr.id = 'row-' + num;
+    tr.style.background = getRowBg(num - 1);
+    tr.innerHTML = `
+      <td>
+        <div class="step-cell-container">
+          <span class="step-num">${num}.</span>
+          <input class="step-input" placeholder="Step name..."/>
+          ${num > 4 ? `<button class="remove-btn" onclick="removeRow('row-${num}')" title="Remove step">×</button>` : ''}
+        </div>
+      </td>
+      <td>
+        <div class="sub-steps-wrapper">
+          <input class="step-input" placeholder="Sub-step one..."/>
+          <input class="step-input" placeholder="Sub-step two..."/>
+          <input class="step-input" placeholder="Sub-step three (optional)..."/>
+        </div>
+      </td>
+      <td>
+        <input class="fill-input" placeholder="Date..."/>
+      </td>
+      <td style="text-align: center;">
+        <div class="check-box" onclick="this.classList.toggle('checked')"></div>
+      </td>
+    `;
+    return tr;
+  }
+
+  function buildCheckin(num) {
+    const div = document.createElement('div');
+    div.id = 'checkin-' + num;
+    div.style.marginBottom = '10px';
+    div.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+        <div class="week-label">Week ${num} — <input class="fill-input" placeholder="Date..." style="width:80px;display:inline-block;font-size:10px;"/></div>
+        ${num > 1 ? `<button class="remove-btn" onclick="removeCheckin('checkin-${num}')" title="Remove week" style="font-size:16px; margin-left:0;">×</button>` : ''}
+      </div>
+      <textarea class="checkin-textarea" placeholder="What did I forge this week? What got in the way? What does next week need from me?"></textarea>
+    `;
+    return div;
+  }
+
+  function addRow() {
+    rowCount++;
+    const container = document.getElementById('rows-container');
+    container.appendChild(buildRow(rowCount));
+    restripeRows();
+  }
+
+  function removeRow(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+    restripeRows();
+  }
+
+  function restripeRows() {
+    const rows = document.querySelectorAll('#rows-container tr');
+    rows.forEach((row, i) => { 
+      row.style.background = getRowBg(i);
+      const numSpan = row.querySelector('.step-num');
+      if(numSpan) numSpan.textContent = (i + 1) + '.';
+    });
+  }
+
+  function addCheckin() {
+    checkinCount++;
+    const container = document.getElementById('checkins-container');
+    container.appendChild(buildCheckin(checkinCount));
+  }
+
+  function removeCheckin(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  // Init
+  const rowsContainer = document.getElementById('rows-container');
+  for (let i = 1; i <= 4; i++) {
+    rowsContainer.appendChild(buildRow(i));
+  }
+
+  const checkinsContainer = document.getElementById('checkins-container');
+  checkinsContainer.appendChild(buildCheckin(1));
+</script>
+
+</body>
+</html>
